@@ -24,7 +24,7 @@ class TestReportPage(unittest.TestCase):
         self.helper = Helpers(self.driver)
         self.wait = WebDriverWait(self.driver, 10)
 
-    def test_login(self):
+    def test_reportPage(self):
         print("\nStarting Report Page test...")
         self.helper.login()
         self.helper.checkSidebarItems()

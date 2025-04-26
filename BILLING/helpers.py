@@ -76,7 +76,7 @@ class Helpers:
             print("✅ Login button clicked")
 
             himoBilling = self.wait.until(EC.visibility_of_element_located((
-                By.XPATH, "//*[@id='root']/div[1]/div/div[1]/div[2]/div/div[1]/ul/li/a/div[2]/span"
+                By.XPATH, "//span[@class='font-semibold' and text()='HIMO Billing']"
             )))
             assert himoBilling.is_displayed(), "HIMO Billing text not found after login"
             print("✅ HIMO Billing text found")
@@ -118,11 +118,13 @@ class Helpers:
     def checkSidebarItems(self):
         """Asserts that sidebar items are present on the page after login and prints them"""
         try:
-            sidebar_list = self.wait.until(EC.presence_of_element_located((
-                By.XPATH, "//*[@id='root']/div[1]/div/div[1]/div[2]/div/div[2]/div/div/ul"
+            # Adjusted XPath based on provided parent element
+            sidebar_container = self.wait.until(EC.visibility_of_element_located((
+                By.XPATH, "//*[@id='root']/div[1]/div/div[2]/div[2]/div/div[2]/div"
             )))
-            sidebar_items = sidebar_list.find_elements(By.TAG_NAME, "li")
 
+            sidebar_items = sidebar_container.find_elements(By.TAG_NAME, "li")
+            
             assert len(sidebar_items) > 0, "❌ No sidebar items found"
             print(f"✅ Sidebar loaded with {len(sidebar_items)} item(s):")
 
@@ -133,17 +135,22 @@ class Helpers:
         except Exception as e:
             print(f"❌ Sidebar assertion failed: {e}")
 
+
     def clickSelectedItem(self, label):
         """Clicks a sidebar item by partial text match (case-insensitive)"""
         try:
-            sidebar_list = self.wait.until(EC.presence_of_element_located((
-                By.XPATH, "//*[@id='root']/div[1]/div/div[1]/div[2]/div/div[2]/div/div/ul"
+            # Updated XPath to match the correct sidebar container
+            sidebar_container = self.wait.until(EC.visibility_of_element_located((
+                By.XPATH, "//*[@id='root']/div[1]/div/div[2]/div[2]/div/div[2]/div"
             )))
-            sidebar_items = sidebar_list.find_elements(By.TAG_NAME, "li")
+            
+            # Use visible list items within the container
+            sidebar_items = sidebar_container.find_elements(By.TAG_NAME, "li")
 
             for item in sidebar_items:
                 text = item.text.strip()
                 if label.lower() in text.lower():
+                    self.driver.execute_script("arguments[0].scrollIntoView(true);", item)
                     item.click()
                     print(f"\n✅ Clicked sidebar item: {text}")
                     return
@@ -152,3 +159,4 @@ class Helpers:
 
         except Exception as e:
             print(f"❌ Failed to click sidebar item: {e}")
+
