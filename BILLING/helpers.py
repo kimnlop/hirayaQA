@@ -160,3 +160,9 @@ class Helpers:
         except Exception as e:
             print(f"❌ Failed to click sidebar item: {e}")
 
+    def clickSubSidebarItem(self, link_text):
+        submenu = self.wait.until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'ul[data-sidebar="menu-sub"]'))
+        )
+        subitem = submenu.find_element(By.LINK_TEXT, link_text)
+        subitem.click()
