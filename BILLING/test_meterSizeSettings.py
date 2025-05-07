@@ -11,11 +11,11 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 import re
 
-class TestUserRoleManagementPage(unittest.TestCase):
+class TestMeterSizePage(unittest.TestCase):
     def setUp(self):
         chrome_options = Options()
         chrome_options.add_experimental_option("detach", True)
-        new_profile_path = r"C:\Users\ASUS\Desktop\Web Drivers\chrome_profile"
+        new_profile_path = r"C:\Users\kimqs\Desktop\Web Drivers\chrome_profile"
         chrome_options.add_argument(f"user-data-dir={new_profile_path}")
         self.driver = webdriver.Chrome(options=chrome_options)
         self.driver.implicitly_wait(10)
@@ -23,12 +23,13 @@ class TestUserRoleManagementPage(unittest.TestCase):
         self.helper = Helpers(self.driver)
         self.wait = WebDriverWait(self.driver, 10)
 
-    def test_meterConnectionSettings(self):
+    def test_meterSizeSettings(self):
         print("\nStarting Meter & Connection Settings Page test...")
         self.helper.login()
         self.helper.checkSidebarItems()
         self.helper.clickSelectedItem("Meter & Connection Settings")
         self.clickMeterSize()
+        self.helper.checkTable("Meter Size")
         self.helper.logout()
         self.driver.quit()
 
@@ -167,7 +168,7 @@ class TestUserRoleManagementPage(unittest.TestCase):
                 "//div[@role='menuitem' and contains(text(), 'Delete Meter Size')]"
             )))
             delete_option.click()
-            print("🗑️ 'Delete Meter Size' option clicked.")
+            print("🗑️  'Delete Meter Size' option clicked.")
 
             label_element = self.wait.until(EC.visibility_of_element_located((
                 By.XPATH, "//label[contains(text(), 'Type')]"

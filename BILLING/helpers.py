@@ -9,6 +9,8 @@ import unittest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.keys import Keys
 
 
 class Helpers:
@@ -99,14 +101,14 @@ class Helpers:
 
             # Click the user menu
             user_menu_button.click()
-            print("User menu clicked.")
+            print("\n\n User menu clicked.")
 
             logout_item = self.wait.until(EC.element_to_be_clickable((
                 By.XPATH,
                 "//div[@role='menuitem' and normalize-space()='Log out']"
             )))
             logout_item.click()
-            print("✅ Logout item clicked")
+            print("✅ Logout clicked")
             
             time.sleep(2)
             self.wait.until(EC.visibility_of_element_located((By.NAME, "username")))
@@ -166,3 +168,38 @@ class Helpers:
         )
         subitem = submenu.find_element(By.LINK_TEXT, link_text)
         subitem.click()
+
+    def checkTable(self, table_name):
+        print(f"\n🔍 Checking {table_name} Table Headers...")
+
+        header_buttons = self.wait.until(EC.presence_of_all_elements_located((
+            By.XPATH, "//thead//th//button"
+        )))
+
+        actions = ActionChains(self.driver)
+
+        for btn in header_buttons:
+            header_text = btn.text.strip()
+            assert header_text != "", "❌ Found a header with empty text!"
+            assert btn.is_displayed(), f"❌ Header '{header_text}' is not visible!"
+            assert btn.is_enabled(), f"❌ Header '{header_text}' is not clickable!"
+
+            # Click to test clickability
+            btn.click()
+            print(f"🔁 Clicked header '{header_text}' once.")
+            time.sleep(0.5)
+
+            # Press ESC to close dropdown/popover
+            actions.send_keys(Keys.ESCAPE).perform()
+            time.sleep(0.2)
+
+            print(f"✅ Header '{header_text}' passed click test and dropdown closed.")
+
+        try:
+            actions_header = self.driver.find_element(By.XPATH, "//thead//th/div[text()='Actions']")
+            assert actions_header.is_displayed(), "❌ 'Actions' header not visible!"
+            print("✅ Header 'Actions' is visible")
+        except Exception:
+            print("⚠️ 'Actions' header not found or not visible.")
+
+        print(f"✅ {table_name} Table header check complete.")

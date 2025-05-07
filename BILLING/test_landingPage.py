@@ -12,7 +12,7 @@ class TestLandingPage(unittest.TestCase):
     def setUp(self):
         chrome_options = Options()
         chrome_options.add_experimental_option("detach", True)
-        new_profile_path = r"C:\Users\ASUS\Desktop\Web Drivers\chrome_profile"
+        new_profile_path = r"C:\Users\kimqs\Desktop\Web Drivers\chrome_profile"
         chrome_options.add_argument(f"user-data-dir={new_profile_path}")
         self.driver = webdriver.Chrome(options=chrome_options)
         self.driver.implicitly_wait(10)
